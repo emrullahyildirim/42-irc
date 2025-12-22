@@ -7,8 +7,8 @@ SRCDIR = src
 OBJDIR = objects
 BINDIR = bin
 
-SRCS = $(SRCDIR)/main.cpp 
-OBJS = $(OBJDIR)/main.o
+SRCS = $(SRCDIR)/main.cpp $(SRCDIR)/Server.cpp
+OBJS = $(OBJDIR)/main.o $(OBJDIR)/Server.o
 
 all: $(BINDIR)/$(NAME)
 
