@@ -12,8 +12,13 @@ int main(int argc, char **argv)
 	}
 
 	Server server = Server(atoi(argv[1]), argv[2]);
-	server.Initialize();
-	server.Run();
+	try {
+		server.Initialize();
+		server.Run();
+	} catch (const Server::RuntimeException &e) {
+		std::cerr << "Server runtime error: " << e.what() << std::endl;
+		return (EXIT_FAILURE);
+	}
 
 	return (EXIT_SUCCESS);
 }

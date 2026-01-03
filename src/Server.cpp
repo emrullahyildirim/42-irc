@@ -11,6 +11,11 @@ Server &Server::operator=(const Server &other) {
 	return *this;
 }
 
+std::string	Server::getPassword() const
+{
+	return (_password);
+}
+
 int Server::Initialize()
 {
 	_socketFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -66,47 +71,50 @@ void Server::handleNewConnection()
 	socklen_t addrLen = sizeof(clientAddr);
 	int newSocket = accept(_socketFd, (struct sockaddr *)&clientAddr, &addrLen);
 
-	if (newSocket != -1)
-	{
-		fcntl(newSocket, F_SETFL, O_NONBLOCK);
-		struct pollfd client_pfd;
-		client_pfd.fd = newSocket;
-		client_pfd.events = POLLIN;
-		_socketPoolFds.push_back(client_pfd);
-		onClientConnect();
-
-	}
+	if (newSocket == -1)
+		return ;	
+	fcntl(newSocket, F_SETFL, O_NONBLOCK);
+	struct pollfd client_pfd;
+	client_pfd.fd = newSocket;
+	client_pfd.events = POLLIN;
+	_socketPoolFds.push_back(client_pfd);
+	onClientConnect(newSocket);
 }
 
-void Server::handleNewData(int fd)
+void Server::handleNewData(int socketFd)
 {
 	char buffer[1024] = {0};
-	int valread = read(fd, buffer, 1024);
+	int valread = read(socketFd, buffer, 1024);
 	if (valread > 0)
-		onClientData(buffer);
+		onClientMessage(socketFd, buffer);
 	else
 	{
-		close(fd);
-		onClientDisconnect();
+		close(socketFd);
+		onClientDisconnect(socketFd);
 	}
 }
 
-void Server::onClientConnect()
+void Server::onClientConnect(int socketFd)
 {
-	std::cout << "New client connected." << std::endl;
+	Client newClient = Client(*this, socketFd);
+	_clientManager.addClient(newClient);
 }
 
-void Server::onClientDisconnect()
+void Server::onClientDisconnect(int socketFd)
 {
-	std::cout << "Client disconnected." << std::endl;
+	_clientManager.removeClient(socketFd);
 }
 
-void Server::onClientData(char *data)
+void Server::onClientMessage(int socketFd, char *data)
 {
-	std::cout << "Received data: " << data << std::endl;
+	Client* client = _clientManager.getClient(socketFd);
+	if (!client)
+		return ;
+
+	std::cout << data << std::endl;
 }
 
-Server::RuntimeException::RuntimeException(std::string err) : _message("IRC Server Panic: " + err)
+Server::RuntimeException::RuntimeException(std::string err) : _message(err)
 {
 }
 
