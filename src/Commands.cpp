@@ -1,4 +1,5 @@
 #include "../headers/Client.hpp"
+#include "../headers/Server.hpp"
 
 bool Command_Pass(Client &client, const std::string &args)
 {

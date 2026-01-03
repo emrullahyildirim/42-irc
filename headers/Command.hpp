@@ -4,16 +4,23 @@
 #include <iostream>
 #include "Client.hpp"
 
+typedef bool (*t_executeFunc)(Client &client, const std::string &args);
+
 class Command
 {
 	private:
-		std::string _alias;
-		std::string _description;
-		bool (*_executeFunc)(Client &client, const std::string &args);
+		std::string		_alias;
+		std::string		_description;
+		t_executeFunc	_executeFunc;
 	public:
+		~Command();
+		Command();
 		Command(const std::string &alias, const std::string &description, bool (*executeFunc)(Client &client, const std::string &args));
-		std::string getAlias() const;
-		std::string getDescription() const;
+		Command(const Command& other);
+		Command &operator=(const Command& other);
+
+		const std::string &getAlias() const;
+		const std::string &getDescription() const;
 
 		bool Execute(Client &client, const std::string &args) const;
 };

@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 	try {
 		server.Initialize();
 		server.Run();
-	} catch (const Server::RuntimeException &e) {
+	} catch (const std::exception &e) {
 		std::cerr << "Server runtime error: " << e.what() << std::endl;
 		return (EXIT_FAILURE);
 	}

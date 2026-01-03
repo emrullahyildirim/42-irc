@@ -2,20 +2,26 @@
 #define CLIENT_MANAGER_HPP
 
 #include <map>
-#include "Client.hpp"
+
+class Client;
+class Server;
 
 class ClientManager
 {
 	private:
 		std::map<int, class Client> _clients;
 	public:
+		~ClientManager();
 		ClientManager();
+		ClientManager(const ClientManager& other);
+		ClientManager &operator=(const ClientManager& other);
 		
-		void addClient(const Client &client);
+		void addClient(Server &server, int socketFd);
 		void removeClient(int socketFd);
-		Client* getClient(int socketFd);
+		bool isExists(int socketFd) const;
 
-		bool isClientExists(int socketFd) const;
+		Client	*getClient(int socketFd);
+		const Client *getClient(int socketFd) const;
 };
 
 #endif

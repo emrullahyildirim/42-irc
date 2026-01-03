@@ -1,6 +1,18 @@
 #include "../headers/CommandManager.hpp"
 
+CommandManager::~CommandManager() {}
+
 CommandManager::CommandManager() {}
+
+CommandManager::CommandManager(const CommandManager& other) {
+	*this = other;
+}
+
+CommandManager& CommandManager::operator=(const CommandManager& other) {
+	if (this != &other)
+		_commands = other._commands;
+	return (*this);
+}
 
 void CommandManager::registerCommand(const Command &cmd)
 {
@@ -19,6 +31,3 @@ bool CommandManager::isCommandExists(const std::string &name) const
 {
 	return (_commands.find(name) != _commands.end());
 }
-
-
-
