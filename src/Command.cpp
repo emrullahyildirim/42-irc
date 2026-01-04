@@ -1,5 +1,7 @@
 #include "../headers/Command.hpp"
 
+Command::~Command() {}
+
 Command::Command() : _alias(""), _description(""), _executeFunc(NULL) {}
 
 Command::Command(const std::string &alias, const std::string &description, t_executeFunc executeFunc)
@@ -21,9 +23,9 @@ Command& Command::operator=(const Command& other) {
 const std::string &Command::getAlias() const{ return (_alias); }	
 const std::string &Command::getDescription() const { return (_description); }
 
-bool Command::Execute(Client &client, const std::string &args) const
+bool Command::Execute(Client &client, const Parser &parser) const
 {
 	if (!_executeFunc)
 		return (false);
-	return (_executeFunc(client, args));
+	return (_executeFunc(client, parser));
 }

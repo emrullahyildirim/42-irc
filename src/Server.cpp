@@ -6,20 +6,30 @@
 #include <errno.h>
 #include <cstdio>
 #include <cstring>
+#include <sstream>
+#include "../headers/Parser.hpp"
 #include "../headers/Server.hpp"
 #include "../headers/Client.hpp"
+#include "../headers/Commands.hpp"
+
 
 Server::~Server() {
     for (size_t i = 0; i < _socketPoolFds.size(); i++)
         close(_socketPoolFds[i].fd);
 }
 
-Server::Server(int serverPort, std::string serverPassword) : _port(serverPort), _password(serverPassword), _socketFd(-1) {}
+Server::Server(std::string name, int serverPort, std::string serverPassword) : _name(name), _port(serverPort), _password(serverPassword), _socketFd(-1) {
+	initializeCommands();
+}
 
-Server::Server(const Server &other) { *this = other; }
+Server::Server(const Server &other) { 
+	*this = other; 
+	initializeCommands();
+}
 
 Server &Server::operator=(const Server &other) {
     if (this != &other) {
+		_name = other._name;
         _port = other._port;
         _password = other._password;
         _socketFd = other._socketFd;
@@ -28,7 +38,8 @@ Server &Server::operator=(const Server &other) {
     return *this;
 }
 
-std::string Server::getPassword() const { return _password; }
+const std::string &Server::getPassword() const { return _password; }
+const std::string &Server::getName() const { return _name; }
 
 void Server::Initialize() {
 	_socketFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -146,5 +157,24 @@ void Server::onClientDisconnect(int socketFd)
 }
 
 void Server::onClientMessage(Client &client, std::string data) {
-    std::cout << data << std::endl;
+	Parser parsedCmd(data);
+
+	if (!_commandManager.isCommandExists(parsedCmd.getCommand()))
+		reply(client, 421, parsedCmd.getCommand() + " :Unknown command");
+	else 
+		_commandManager.executeCommand(client, parsedCmd);
+}
+
+void Server::reply(Client &client, int code, std::string msg) {
+    std::stringstream ss;
+    ss << code;
+    std::string codeStr = ss.str();
+    
+    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getUsername() + " " + msg;
+    client.sendMessage(fullMsg);
+}
+
+void Server::initializeCommands()
+{
+	_commandManager.registerCommand(Command("PING", "PING COMMAND", Command_Ping));
 }

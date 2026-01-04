@@ -1,8 +1,9 @@
+#include <sys/socket.h>
 #include "../headers/Client.hpp"
 
 Client::~Client() {}
 
-Client::Client(Server &server, int socketFd) : _socketFd(socketFd), _isAuthenticated(false), _server(&server) {}
+Client::Client(Server &server, int socketFd) : _socketFd(socketFd), _isAuthenticated(false), _username("*"), _server(&server) {}
 
 Client::Client(const Client& other) {
 	*this = other;
@@ -41,4 +42,10 @@ void Client::authenticate(const std::string &username, const std::string &nickna
     _username = username;
     _nickname = nickname;
     _isAuthenticated = true;
+}
+
+void Client::sendMessage(std::string message)
+{
+	message += "\r\n";
+	send(_socketFd, message.c_str(), message.length(), 0);
 }

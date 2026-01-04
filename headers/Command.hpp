@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include "Client.hpp"
+#include "Parser.hpp"
 
-typedef bool (*t_executeFunc)(Client &client, const std::string &args);
+typedef bool (*t_executeFunc)(Client &client, const Parser &parser);
 
 class Command
 {
@@ -15,14 +16,14 @@ class Command
 	public:
 		~Command();
 		Command();
-		Command(const std::string &alias, const std::string &description, bool (*executeFunc)(Client &client, const std::string &args));
+		Command(const std::string &alias, const std::string &description, t_executeFunc t_executeFunc);
 		Command(const Command& other);
 		Command &operator=(const Command& other);
 
 		const std::string &getAlias() const;
 		const std::string &getDescription() const;
 
-		bool Execute(Client &client, const std::string &args) const;
+		bool Execute(Client &client, const Parser& parser) const;
 };
 
 #endif

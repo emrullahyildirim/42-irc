@@ -19,12 +19,12 @@ void CommandManager::registerCommand(const Command &cmd)
 	_commands[cmd.getAlias()] = cmd;
 }
 
-bool CommandManager::executeCommand(const std::string &name, Client &client, const std::string &args)
+bool CommandManager::executeCommand(Client &client, const Parser &parser)
 {
-	std::map<std::string, Command>::const_iterator it = _commands.find(name);
+	std::map<std::string, Command>::const_iterator it = _commands.find(parser.getCommand());
 	if (it == _commands.end())
 		return (false);
-	return (it->second.Execute(client, args));
+	return (it->second.Execute(client, parser));
 }
 
 bool CommandManager::isCommandExists(const std::string &name) const

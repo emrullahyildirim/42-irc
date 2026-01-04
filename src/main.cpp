@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 
-	Server server = Server(atoi(argv[1]), argv[2]);
+	Server server = Server("Manifest", atoi(argv[1]), argv[2]);
 	try {
 		server.Initialize();
 		server.Run();

@@ -28,6 +28,7 @@ class Client
         const std::string& getSocketBuffer() const;
         Server&            getServer() const;
 
+		void sendMessage(std::string buffer);	
         void appendBuffer(const std::string& str);
         void eraseBuffer(size_t pos, size_t len);
         void authenticate(const std::string &username, const std::string &nickname);
