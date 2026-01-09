@@ -25,10 +25,17 @@ void CommandManager::executeCommand(Client &client, const Parser &parser)
 {
 	Server& server = client.getServer();
 	const std::string	cmd = parser.getCommand();
-	if (!client.getIsAuthenticated() && (cmd != "PASS" && cmd != "NICK" && cmd != "USER"&& cmd != "CAP" && cmd != "PING") ) {
-		server.reply(client, 464, "Password required");
+
+	if (!client.getIsAuthenticated() && (cmd != "PASS" && cmd != "NICK" && cmd != "USER" && cmd != "CAP" && cmd != "PING") ) {
+		server.reply(client, 464, ":Password required");
         return ;
     }
+
+	if (!client.getIsRegistered() && (cmd != "PASS" && cmd != "NICK" && cmd != "USER" && cmd != "CAP" && cmd != "PING")) {
+		server.reply(client, 451, ":You have not registered");
+        return ;
+    }
+	
 	std::map<std::string, Command>::const_iterator it = _commands.find(cmd);
 	if (it == _commands.end()) {
 		server.reply(client, 421, cmd + " Unknown command");

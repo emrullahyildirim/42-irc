@@ -2,7 +2,7 @@
 
 Parser::~Parser() {}
 
-Parser::Parser(std::string raw)
+Parser::Parser(std::string raw) : _raw(raw)
 {	
 	std::string	head(raw);
 	size_t	trailingPos = raw.find(" :");

@@ -25,22 +25,27 @@ void Command_Ping(Server &server, Client &client, const Parser &parser) {
 }
 
 void Command_Pass(Server &server, Client &client, const Parser &parser) {
-	std::cout << "sa" << std::endl;
-    if (client.getIsAuthenticated())
+	if (client.getIsRegistered())
 	{
-        server.reply(client, 462, ":Unauthorized command (already registered)");
+		server.reply(client, 462, ":Unauthorized command (already registered)");
+		return;
+	}
+	
+	std::string password;
+	if (!parser.getParams().empty())
+		password = parser.getParams()[0];
+	else
+		password = parser.getTrailing();
+
+	if (password.empty()) {
+		server.reply(client, 461, "PASS :Not enough parameters");
 		return;
 	}
 
-    if (parser.getTrailing().empty())
-	{
-        server.reply(client, 461, "PASS :Not enough parameters");
-		return;
-	}
-
-    if (parser.getTrailing() != server.getPassword()) {
+    if (password != server.getPassword()) {
         server.reply(client, 464, ":Password incorrect.");
 		server.disconnectClient(client);
+		return ;
     }
 
     client.setAuthenticated(true);
@@ -50,7 +55,7 @@ void Command_Pass(Server &server, Client &client, const Parser &parser) {
 void Command_Nick(Server &server, Client &client, const Parser &parser)
 {
 	if (parser.getParams().empty()) {
-		server.reply(client, 431, ":No nickname given");
+		server.reply(client, 431, "NICK :No nickname given");
 		return ;
 	}
 	std::string nick = parser.getParams()[0];
@@ -68,18 +73,25 @@ void Command_Nick(Server &server, Client &client, const Parser &parser)
 	std::string oldNick = client.getNickname();
 	client.setNickname(nick);
 
-	if (client.getIsRegistered())
-		client.sendMessage(":" + oldNick + " NICK " + nick);
-
+	bool isRegistered = client.getIsRegistered();
 	client.CheckRegisteration();
+	if (isRegistered)
+		client.sendMessage(":" + oldNick + "!" + client.getUsername() + "@" + client.getHostname() + " NICK :" + nick);
 }
 
 void Command_User(Server &server, Client &client, const Parser& parser)
 {
-	if (parser.getParams().size() < 3) {
+	if (client.getIsRegistered())
+	{
+        server.reply(client, 462, ":Unauthorized command (already registered)");
+		return;
+	}
+
+	if (parser.getParams().size() < 3 || parser.getTrailing().empty()) {
         server.reply(client, 461, "USER :Not enough parameters");
         return ;
     }
+
 	client.setUsername(parser.getParams()[0]);
     client.setRealname(parser.getTrailing());
     client.CheckRegisteration();

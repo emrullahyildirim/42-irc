@@ -28,12 +28,14 @@ bool Client::getIsRegistered() const { return _isRegistered; }
 const std::string& Client::getUsername() const { return _username; }
 const std::string& Client::getNickname() const { return _nickname; }
 const std::string& Client::getSocketBuffer() const { return _buffer; }
+const std::string& Client::getHostname() const { return _hostname; }
 Server& Client::getServer() const { return *_server; }
 
 void Client::setNickname(std::string nickname) { _nickname = nickname; }
 void Client::setAuthenticated(bool authenticated) { _isAuthenticated = authenticated; }
 void Client::setRealname(std::string realname) { _realname = realname; }
 void Client::setUsername(std::string username) { _username = username; }
+void Client::setHostname(std::string hostname) { _hostname = hostname; }
 
 void Client::appendBuffer(const std::string& str) {
     _buffer += str;

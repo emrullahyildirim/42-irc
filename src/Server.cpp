@@ -146,7 +146,7 @@ void Server::onClientConnect(int socketFd)
 {
 	_clientManager.addClient(*this, socketFd);
 	Client *client = _clientManager.getClient(socketFd);
-	reply(*client, 464, "Password required");
+	client->setHostname("*");
 }
 
 void Server::onClientDisconnect(int socketFd)
@@ -156,7 +156,6 @@ void Server::onClientDisconnect(int socketFd)
             _socketPoolFds.erase(it);
             break;
         }
-
 	_clientManager.removeClient(socketFd);
 	close(socketFd);
 }
@@ -177,7 +176,7 @@ void Server::reply(Client &client, int code, std::string msg) {
     ss << code;
     std::string codeStr = ss.str();
     
-    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getUsername() + " :" + msg;
+    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getUsername() + " " + msg;
     client.sendMessage(fullMsg);
 }
 
