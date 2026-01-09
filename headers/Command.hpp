@@ -2,10 +2,12 @@
 #define COMMAND_HPP
 
 #include <iostream>
-#include "Client.hpp"
 #include "Parser.hpp"
 
-typedef bool (*t_executeFunc)(Client &client, const Parser &parser);
+class Client;
+class Server;
+
+typedef void (*t_executeFunc)(Server &server, Client &client, const Parser &parser);
 
 class Command
 {
@@ -23,7 +25,7 @@ class Command
 		const std::string &getAlias() const;
 		const std::string &getDescription() const;
 
-		bool Execute(Client &client, const Parser& parser) const;
+		void Execute(Client &client, const Parser& parser) const;
 };
 
 #endif

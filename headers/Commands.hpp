@@ -4,7 +4,10 @@
 class Client;
 class Parser;
 
-bool Command_Ping(Client &client, const Parser &parser);
-
+void Command_Cap(Server &server, Client &client, const Parser &parser);
+void Command_Ping(Server &server, Client &client, const Parser &parser);
+void Command_Pass(Server &server, Client &client, const Parser &parser);
+void Command_Nick(Server &server, Client &client, const Parser &parser);
+void Command_User(Server &server, Client &client, const Parser &parser);
 
 #endif

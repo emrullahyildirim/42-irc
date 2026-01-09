@@ -41,6 +41,8 @@ class Server
         void Initialize();
         void Run();
 		void reply(Client &client, int code, const std::string msg);
-};
+		void disconnectClient(Client &client);
+		bool isNickInUse(const std::string &nick);
+	};
 
 #endif

@@ -1,4 +1,6 @@
 #include "../headers/CommandManager.hpp"
+#include "../headers/Server.hpp"
+#include "../headers/Client.hpp"
 
 CommandManager::~CommandManager() {}
 
@@ -19,11 +21,20 @@ void CommandManager::registerCommand(const Command &cmd)
 	_commands[cmd.getAlias()] = cmd;
 }
 
-bool CommandManager::executeCommand(Client &client, const Parser &parser)
+void CommandManager::executeCommand(Client &client, const Parser &parser)
 {
-	std::map<std::string, Command>::const_iterator it = _commands.find(parser.getCommand());
-	if (it == _commands.end())
-		return (false);
+	Server& server = client.getServer();
+	const std::string	cmd = parser.getCommand();
+	if (!client.getIsAuthenticated() && (cmd != "PASS" && cmd != "NICK" && cmd != "USER"&& cmd != "CAP" && cmd != "PING") ) {
+		server.reply(client, 464, "Password required");
+        return ;
+    }
+	std::map<std::string, Command>::const_iterator it = _commands.find(cmd);
+	if (it == _commands.end()) {
+		server.reply(client, 421, cmd + " Unknown command");
+		return ;
+	}
+
 	return (it->second.Execute(client, parser));
 }
 

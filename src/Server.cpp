@@ -131,17 +131,22 @@ void Server::handleNewData(int socketFd)
 				msg.erase(msgLen - 1);
 				onClientMessage(*client, msg);
 			}
+			client = _clientManager.getClient(socketFd);
+			if (!client)
+				return;
 			client->eraseBuffer(0, pos + 1); 
 			clientBuffer = client->getSocketBuffer();
 		}
 	}
-	else
+	else if (valread == 0)
 		onClientDisconnect(socketFd);
 }
 
 void Server::onClientConnect(int socketFd)
 {
 	_clientManager.addClient(*this, socketFd);
+	Client *client = _clientManager.getClient(socketFd);
+	reply(*client, 464, "Password required");
 }
 
 void Server::onClientDisconnect(int socketFd)
@@ -157,24 +162,55 @@ void Server::onClientDisconnect(int socketFd)
 }
 
 void Server::onClientMessage(Client &client, std::string data) {
+	std::cout << "Gelen: " << data << std::endl;
 	Parser parsedCmd(data);
-
-	if (!_commandManager.isCommandExists(parsedCmd.getCommand()))
-		reply(client, 421, parsedCmd.getCommand() + " :Unknown command");
-	else 
-		_commandManager.executeCommand(client, parsedCmd);
+	
+	_commandManager.executeCommand(client, parsedCmd);
 }
 
 void Server::reply(Client &client, int code, std::string msg) {
     std::stringstream ss;
+	if (code < 10)
+		ss << "00";
+	else if (code < 100)
+		ss << '0';
     ss << code;
     std::string codeStr = ss.str();
     
-    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getUsername() + " " + msg;
+    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getUsername() + " :" + msg;
     client.sendMessage(fullMsg);
 }
 
 void Server::initializeCommands()
 {
+	_commandManager.registerCommand(Command("CAP", "CAP COMMAND", Command_Cap));
 	_commandManager.registerCommand(Command("PING", "PING COMMAND", Command_Ping));
+	_commandManager.registerCommand(Command("PASS", "PASS COMMAND", Command_Pass));
+	_commandManager.registerCommand(Command("NICK", "NICK COMMAND", Command_Nick));
+	_commandManager.registerCommand(Command("USER", "USER COMMAND", Command_User));
+
+}
+
+void Server::disconnectClient(Client &client)
+{
+	int	fd = client.getSocketFd();
+	close(fd);
+	for (size_t i = 0; i < _socketPoolFds.size(); ++i) {
+        if (_socketPoolFds[i].fd == fd) {
+            _socketPoolFds.erase(_socketPoolFds.begin() + i);
+            break;
+        }
+    }
+	_clientManager.removeClient(fd);
+}
+
+bool Server::isNickInUse(const std::string &nick)
+{
+    std::map<int, Client> &clients = _clientManager.getClients();
+    
+    std::map<int, Client>::iterator it;
+    for (it = clients.begin(); it != clients.end(); ++it)
+        if (it->second.getNickname() == nick)
+            return true;
+    return false;
 }

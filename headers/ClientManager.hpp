@@ -19,9 +19,11 @@ class ClientManager
 		void addClient(Server &server, int socketFd);
 		void removeClient(int socketFd);
 		bool isExists(int socketFd) const;
-
+		
 		Client	*getClient(int socketFd);
 		const Client *getClient(int socketFd) const;
+		std::map<int, class Client> &getClients();
+		const std::map<int, class Client> &getClients() const;
 };
 
 #endif

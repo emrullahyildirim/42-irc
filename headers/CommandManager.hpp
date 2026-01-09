@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include "Parser.hpp"
 #include "Command.hpp"
 
 class Client;
@@ -18,7 +19,7 @@ class CommandManager
         CommandManager &operator=(const CommandManager& other);
         
         void registerCommand(const Command &cmd);
-        bool executeCommand(Client &client, const Parser& parser);
+        void executeCommand(Client &client, const Parser& parser);
         bool isCommandExists(const std::string &name) const;
 };
 

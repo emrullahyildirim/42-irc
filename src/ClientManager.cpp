@@ -50,4 +50,13 @@ const Client* ClientManager::getClient(int socketFd) const {
     return &(it->second);
 }
 
+std::map<int, class Client> &ClientManager::getClients()
+{
+	return _clients;
+}
+
+const std::map<int, class Client> &ClientManager::getClients() const
+{
+	return _clients;
+}
 

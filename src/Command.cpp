@@ -1,4 +1,5 @@
 #include "../headers/Command.hpp"
+#include "../headers/Client.hpp"
 
 Command::~Command() {}
 
@@ -23,9 +24,8 @@ Command& Command::operator=(const Command& other) {
 const std::string &Command::getAlias() const{ return (_alias); }	
 const std::string &Command::getDescription() const { return (_description); }
 
-bool Command::Execute(Client &client, const Parser &parser) const
+void Command::Execute(Client &client, const Parser &parser) const
 {
-	if (!_executeFunc)
-		return (false);
-	return (_executeFunc(client, parser));
+	if (_executeFunc)
+		_executeFunc(client.getServer(), client, parser);
 }
