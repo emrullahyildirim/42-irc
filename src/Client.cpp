@@ -68,14 +68,15 @@ bool Client::isValidNickname(const std::string& nick) {
 
 void Client::CheckRegisteration()
 {
+	if (_isRegistered)
+    	return;
 	if (_isAuthenticated && !_nickname.empty() && _username.compare("*"))
 	{
 		_isRegistered = true;
-		std::string welcomeMsg = ":Welcome to the Manifest Network, " + _nickname + "!" + _username + "@" + "localhost";
-		_server->reply(*this, 1, welcomeMsg);
+		_server->reply(*this, 1, ":Welcome to the Manifest Network, " + _nickname + "!" + _username + "@" + _hostname);
 		_server->reply(*this, 2, ":Your host is " + _server->getName());
-		_server->reply(*this, 3, ":This server was today.");
-		_server->reply(*this, 4, _server->getName() + " 1.0 i o");
+		_server->reply(*this, 3, ":This server was created today.");
+		_server->reply(*this, 4, ":" + _server->getName() + " 1.0 i o oiws obtkmlvsn");
 	}
 
 

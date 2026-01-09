@@ -3,15 +3,16 @@
 #include "../headers/Commands.hpp"
 
 void Command_Cap(Server &server, Client &client, const Parser &parser) {
-	(void) server;
 	(void) parser;
-	std::string response = ":" + server.getName() + " CAP * LS :";
-	client.sendMessage(response);
+	client.sendMessage(":" + server.getName() + " CAP * LS :");
 }
 
 void Command_Ping(Server &server, Client &client, const Parser &parser) {
     if (parser.getParams().empty() && parser.getTrailing().empty())
+	{
         server.reply(client, 409, ":No origin specified");
+		return ;
+	}
 
     std::string token;
     if (!parser.getTrailing().empty())
@@ -95,5 +96,4 @@ void Command_User(Server &server, Client &client, const Parser& parser)
 	client.setUsername(parser.getParams()[0]);
     client.setRealname(parser.getTrailing());
     client.CheckRegisteration();
-    return ;
 }

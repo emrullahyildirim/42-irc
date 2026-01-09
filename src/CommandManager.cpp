@@ -38,7 +38,7 @@ void CommandManager::executeCommand(Client &client, const Parser &parser)
 	
 	std::map<std::string, Command>::const_iterator it = _commands.find(cmd);
 	if (it == _commands.end()) {
-		server.reply(client, 421, cmd + " Unknown command");
+		server.reply(client, 421, cmd + " :Unknown command");
 		return ;
 	}
 
