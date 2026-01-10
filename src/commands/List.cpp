@@ -8,11 +8,6 @@
 void Command_List(Server &server, Client &client, const Parser &parser)
 {
 	(void)parser;
-	
-	if (!client.getIsRegistered()) {
-		server.reply(client, 451, ":You have not registered");
-		return;
-	}
 
 	server.reply(client, 321, "Channel :Users  Name");
 

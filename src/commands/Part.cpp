@@ -17,12 +17,7 @@ void Command_Part(Server &server, Client &client, const Parser &parser)
 		return;
 	}
 
-	std::string reason = "";
-	if (params.size() > 1) {
-		reason = params[1];
-		if (!reason.empty() && reason[0] == ':')
-			reason = reason.substr(1);
-	}
+	std::string reason = parser.getTrailing();
 
 	std::string channelList = params[0];
 	std::string channelName;

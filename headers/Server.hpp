@@ -43,10 +43,7 @@ class Server
 
 		ChannelManager 				&getChannelManager();
 		ClientManager 				&getClientManager();
-		CommandManager 				&getCommandManager();	
-		ChannelManager 				&getChannelManager() const;
-		ClientManager 				&getClientManager() const;
-		CommandManager 				&getCommandManager() const;		
+		CommandManager 				&getCommandManager();		
 		
         void 						Initialize();
         void 						Run();

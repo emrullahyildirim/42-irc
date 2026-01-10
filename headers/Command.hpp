@@ -13,18 +13,15 @@ class Command
 {
 	private:
 		std::string		_alias;
-		std::string		_description;
 		t_executeFunc	_executeFunc;
 	public:
 		~Command();
 		Command();
-		Command(const std::string &alias, const std::string &description, t_executeFunc executeFunc);
+		Command(const std::string &alias, t_executeFunc executeFunc);
 		Command(const Command& other);
 		Command &operator=(const Command& other);
 
 		const std::string&	getAlias() const;
-		const std::string&	getDescription() const;
-
 		void				Execute(Client &client, const Parser& parser) const;
 };
 

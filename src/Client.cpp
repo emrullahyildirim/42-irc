@@ -50,11 +50,11 @@ void Client::eraseBuffer(size_t pos, size_t len) {
         _buffer.erase(pos, len);
 }
 
-void Client::sendMessage(std::string message)
+void Client::sendMessage(const std::string &message)
 {
-	message += "\r\n";
-	send(_socketFd, message.c_str(), message.length(), 0);
-	std::cout << "[SEND]: " << message;
+	std::string msg = message + "\r\n";
+	send(_socketFd, msg.c_str(), msg.length(), 0);
+	std::cout << "[SEND]: " << msg;
 }
 
 

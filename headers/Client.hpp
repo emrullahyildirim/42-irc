@@ -38,7 +38,7 @@ class Client
 		void 				setRealname(const std::string &realname);
 		void 				setHostname(const std::string &hostname);
 		
-		void				sendMessage(std::string buffer);
+		void				sendMessage(const std::string &message);
 		
         void				appendBuffer(const std::string& str);
         void				eraseBuffer(size_t pos, size_t len);
