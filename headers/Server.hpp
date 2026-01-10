@@ -1,13 +1,13 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include <iostream>
+#include <string>
 #include <vector>
 #include <string>
 #include <poll.h>
 #include <exception>
 
-#include "ClientManager.hpp" 
+#include "ClientManager.hpp"
 #include "CommandManager.hpp"
 #include "ChannelManager.hpp"
 
@@ -17,8 +17,10 @@ class Server
 		std::string					_name;
         int                         _port;
         std::string                 _password;
+
         int                         _socketFd;
         std::vector<struct pollfd>  _socketPoolFds;
+
         ClientManager               _clientManager;
 		CommandManager				_commandManager;
 		ChannelManager				_channelManager;
@@ -32,26 +34,29 @@ class Server
         void parseCommand(const std::string &message, std::string &command, std::string &args);
 		
 	public:
+		~Server();
         Server(std::string name, int port, std::string password);
         Server(const Server &other);
         Server& operator=(const Server &other);
-        ~Server();
 		
-        const std::string &getPassword() const;
-		const std::string &getName() const; 
+		int							getPort() const;
+        const std::string&			getPassword() const;
+		const std::string&			getName() const; 
 
-		ChannelManager &getChannelManager();
-		const ChannelManager &getChannelManager() const;
-		ClientManager &getClientManager();
-		const ClientManager &getClientManager() const;
-		CommandManager &getCommandManager();
-		const CommandManager &getCommandManager() const;		
+		ChannelManager 				&getChannelManager();
+		ClientManager 				&getClientManager();
+		CommandManager 				&getCommandManager();	
+		ChannelManager 				&getChannelManager() const;
+		ClientManager 				&getClientManager() const;
+		CommandManager 				&getCommandManager() const;		
 
-        void Initialize();
-        void Run();
-		void reply(Client &client, int code, const std::string msg);
-		void disconnectClient(Client &client);
-		bool isNickInUse(const std::string &nick);
+        void 						Initialize();
+        void 						Run();
+
+		void 						reply(Client &client, int code, const std::string &msg) const;
+		void 						disconnectClient(Client &client);
+
+		bool						isNickInUse(const std::string &nick) const;
 	};
 
 #endif

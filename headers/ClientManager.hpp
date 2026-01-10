@@ -7,25 +7,28 @@
 class Client;
 class Server;
 
+typedef std::map<int, class Client> t_clientsMap;
+
 class ClientManager
 {
 	private:
-		std::map<int, class Client> _clients;
+		t_clientsMap		_clients;
 	public:
 		~ClientManager();
 		ClientManager();
 		ClientManager(const ClientManager& other);
 		ClientManager &operator=(const ClientManager& other);
 		
-		void addClient(Server &server, int socketFd);
-		void removeClient(int socketFd);
-		bool isExists(int socketFd) const;
+		t_clientsMap&		getClients();
+		const t_clientsMap&	getClients() const;
+
+		void				addClient(Server &server, int socketFd);
+		void				removeClient(int socketFd);
+		bool				isExists(int socketFd) const;
 		
-		Client	*getClient(int socketFd);
-		Client  *getClientByNick(std::string &name) const;
-		const Client *getClient(int socketFd) const;
-		std::map<int, class Client> &getClients();
-		const std::map<int, class Client> &getClients() const;
+		Client*				getClient(int socketFd);
+		const Client*		getClient(int socketFd) const;
+		Client*				getClientByNick(std::string &name) const;
 };
 
 #endif

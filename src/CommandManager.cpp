@@ -1,6 +1,8 @@
 #include "../headers/CommandManager.hpp"
 #include "../headers/Server.hpp"
 #include "../headers/Client.hpp"
+#include "../headers/Parser.hpp"
+#include "../headers/Command.hpp"
 
 CommandManager::~CommandManager() {}
 
@@ -16,14 +18,16 @@ CommandManager& CommandManager::operator=(const CommandManager& other) {
 	return (*this);
 }
 
+const t_CommandsMap&	CommandManager::getCommands() const { return (_commands); }
+
 void CommandManager::registerCommand(const Command &cmd)
 {
-	_commands[cmd.getAlias()] = cmd;
+	_commands.insert(std::pair<std::string, Command>(cmd.getAlias(), cmd));
 }
 
 void CommandManager::executeCommand(Client &client, const Parser &parser)
 {
-	Server& server = client.getServer();
+	const Server& server = client.getServer();
 	const std::string	cmd = parser.getCommand();
 
 	if (!client.getIsAuthenticated() && (cmd != "PASS" && cmd != "NICK" && cmd != "USER" && cmd != "CAP" && cmd != "PING") ) {

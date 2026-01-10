@@ -1,6 +1,7 @@
 #include "../../headers/Client.hpp"
 #include "../../headers/Server.hpp"
 #include "../../headers/Channel.hpp"
+#include "../../headers/Parser.hpp"
 
 void Command_List(Server &server, Client &client, const Parser &parser)
 {
@@ -12,7 +13,7 @@ void Command_List(Server &server, Client &client, const Parser &parser)
 	for (it = channels.begin(); it != channels.end(); ++it) {
 		Channel* channel = it->second;
 		std::string channelName = channel->getName();
-		size_t userCount = channel->getClintCount();
+		size_t userCount = channel->getClientCount();
 		std::string topic = channel->getTopic();
 		server.reply(client, 322, channelName + " " + std::to_string(userCount) + " :" + topic);
 	}

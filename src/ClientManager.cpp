@@ -10,8 +10,7 @@ ClientManager::ClientManager(const ClientManager& other) {
 	*this = other;
 }
 
-ClientManager &ClientManager::operator=(const ClientManager& other)
-{
+ClientManager &ClientManager::operator=(const ClientManager& other) {
 	if (this != &other)
 		this->_clients = other._clients;
 	return (*this);
@@ -22,50 +21,46 @@ void ClientManager::addClient(Server &server, int socketFd) {
         _clients.insert(std::make_pair(socketFd, Client(server, socketFd)));
 }
 
-void ClientManager::removeClient(int socketFd)
-{
+void ClientManager::removeClient(int socketFd) {
 	_clients.erase(socketFd);
 }
 
-bool ClientManager::isExists(int socketFd) const
-{
+bool ClientManager::isExists(int socketFd) const {
 	return (_clients.find(socketFd) != _clients.end());
 }
 
 Client* ClientManager::getClient(int socketFd) {
-    std::map<int, Client>::iterator it = _clients.find(socketFd);
+    t_clientsMap::iterator it = _clients.find(socketFd);
 
     if (it == _clients.end()) 
-		return NULL;
+		return (NULL);
 
     return &(it->second);
 }
 
-Client* ClientManager::getClientByNick(std::string &name) const {
-	for (std::map<int, Client>::const_iterator it = _clients.begin(); it != _clients.end(); ++it) {
-		if (it->second.getNickname() == name) {
-			return const_cast<Client*>(&(it->second));
-		}
-	}
-	return NULL;
-}
-
 const Client* ClientManager::getClient(int socketFd) const {
-    std::map<int, Client>::const_iterator it = _clients.find(socketFd);
+    t_clientsMap::const_iterator it = _clients.find(socketFd);
 
     if (it == _clients.end())
-		return NULL;
+		return (NULL);
 		
     return &(it->second);
 }
 
+Client* ClientManager::getClientByNick(std::string &name) const {
+	for (t_clientsMap::const_iterator it = _clients.begin(); it != _clients.end(); ++it)
+		if (it->second.getNickname() == name) 
+			return const_cast<Client*>(&(it->second));
+	return (NULL);
+}
+
 std::map<int, class Client> &ClientManager::getClients()
 {
-	return _clients;
+	return (_clients);
 }
 
 const std::map<int, class Client> &ClientManager::getClients() const
 {
-	return _clients;
+	return (_clients);
 }
 

@@ -2,8 +2,7 @@
 
 Parser::~Parser() {}
 
-Parser::Parser(std::string raw) : _raw(raw)
-{	
+Parser::Parser(std::string raw) : _raw(raw) {	
 	std::string	head(raw);
 	size_t	trailingPos = raw.find(" :");
 	if (trailingPos != std::string::npos)
@@ -32,19 +31,16 @@ Parser::Parser(std::string raw) : _raw(raw)
 
 	_command = _params[0];
 	_params.erase(_params.begin());
-	for (size_t i = 0; i < _command.length(); ++i)
+	for (size_t i = 0; i < _command.length(); i++)
 		_command[i] = std::toupper(_command[i]);
 }
 
-Parser::Parser(const Parser& other) 
-{
+Parser::Parser(const Parser& other) {
 	*this = other;
 }
 
-Parser &Parser::operator=(const Parser& other)
-{
-	if (this != &other)
-	{
+Parser &Parser::operator=(const Parser& other) {
+	if (this != &other) {
 		_raw = other._raw;
 		_command = other._command;
 		_params = other._params;
@@ -53,7 +49,7 @@ Parser &Parser::operator=(const Parser& other)
 	return (*this);
 }
 
-const std::string &Parser::getRaw() const {return _raw;}
-const std::string &Parser::getCommand() const {return _command;}
-const std::string &Parser::getTrailing() const {return _trailing;}
-const std::vector<std::string> &Parser::getParams() const {return _params;}
+const std::string &Parser::getRaw() const {return (_raw);}
+const std::string &Parser::getCommand() const {return (_command);}
+const std::string &Parser::getTrailing() const {return (_trailing);}
+const std::vector<std::string> &Parser::getParams() const {return (_params);}

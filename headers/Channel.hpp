@@ -7,40 +7,44 @@
 
 class Client;
 
+typedef std::vector<Client *> t_clientVector;
+
 class Channel 
 {
 	private:
-		std::string             _name;
-		std::string             _topic;
-		std::string             _password;
-		size_t                  _limit;
+		std::string				_name;
+		std::string				_topic;
+		std::string				_password;
+		size_t					_limit;
 		
-		std::vector<Client*>    _clients;
-		std::vector<Client*>    _operators;
+		t_clientVector			_clients;
+		t_clientVector			_operators;
 	public:
 		~Channel();
-		Channel(std::string name);
+		Channel(const std::string &name);
 		Channel(const Channel& other);
 		Channel& operator=(const Channel &other);
 
-		std::string getName() const;
-		std::string getPassword() const;
-		std::string getTopic() const;
-		std::vector<Client*>& getClients();
+		const std::string 		&getName() const;
+		const std::string 		&getPassword() const;
+		const std::string 		&getTopic() const;
+		const t_clientVector	&getClients() const;
 
+		void					setName(const std::string& name);
+		void					setPassword(const std::string& password);	
+		void 					setTopic(const std::string& topic);
 
-		size_t getClintCount() const;
-
-		void setTopic(const std::string& topic);
-		void addClient(Client* client);
-		void removeClient(Client* client);
-		void broadcast(const std::string& message, Client* except = NULL);
+		void 					addClient(Client* client);
+		void 					removeClient(Client* client);
+		bool					isClientInChannel(Client* client) const;
+		size_t					getClientCount() const;
 		
-		bool isOperator(Client* client) const;
-		void addOperator(Client* client);
-		void removeOperator(Client* client);
-		bool isClientInChannel(Client* client) const;
-		std::string getClientListString() const;
-};
+		bool					isOperator(Client* client) const;
+		void					addOperator(Client* client);
+		void					removeOperator(Client* client);
+		
+		void 					broadcast(const std::string& message, Client* except = NULL);
+		std::string				getClientListString() const;
+	};
 
 #endif

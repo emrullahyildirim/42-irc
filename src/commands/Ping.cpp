@@ -1,5 +1,6 @@
 #include "../../headers/Client.hpp"
 #include "../../headers/Server.hpp"
+#include "../../headers/Parser.hpp"
 
 void Command_Ping(Server &server, Client &client, const Parser &parser) {
     if (parser.getParams().empty() && parser.getTrailing().empty())

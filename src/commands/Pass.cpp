@@ -1,5 +1,6 @@
 #include "../../headers/Client.hpp"
 #include "../../headers/Server.hpp"
+#include "../../headers/Parser.hpp"
 
 void Command_Pass(Server &server, Client &client, const Parser &parser) {
 	if (client.getIsRegistered())

@@ -1,6 +1,7 @@
 #include "../../headers/Client.hpp"
 #include "../../headers/Server.hpp"
 #include "../../headers/Channel.hpp"
+#include "../../headers/Parser.hpp"
 
 void Command_Join(Server &server, Client &client, const Parser &parser)
 {

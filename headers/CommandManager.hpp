@@ -3,24 +3,28 @@
 
 #include <iostream>
 #include <map>
-#include "Parser.hpp"
-#include "Command.hpp"
 
 class Client;
+class Command;
+class Parser;
+
+typedef std::map <std::string, Command> t_CommandsMap;
 
 class CommandManager
 {
     private:
-        std::map<std::string, Command> _commands;
+        t_CommandsMap			_commands;
     public:
 		~CommandManager();
         CommandManager();
         CommandManager(const CommandManager& other);            
         CommandManager &operator=(const CommandManager& other);
         
-        void registerCommand(const Command &cmd);
-        void executeCommand(Client &client, const Parser& parser);
-        bool isCommandExists(const std::string &name) const;
+		const t_CommandsMap&	getCommands() const;
+
+        void					registerCommand(const Command &cmd);
+        void					executeCommand(Client &client, const Parser& parser);
+        bool					isCommandExists(const std::string &name) const;
 };
 
 #endif

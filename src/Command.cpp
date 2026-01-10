@@ -3,29 +3,23 @@
 
 Command::~Command() {}
 
-Command::Command() : _alias(""), _description(""), _executeFunc(NULL) {}
-
 Command::Command(const std::string &alias, const std::string &description, t_executeFunc executeFunc)
 	: _alias(alias), _description(description), _executeFunc(executeFunc) {}
 
-Command::Command(const Command& other) {
+Command::Command(const Command& other) : _alias(other._alias), _description(other._description) {
     *this = other;
 }
 
 Command& Command::operator=(const Command& other) {
-    if (this != &other) {
-        this->_alias = other._alias;
-        this->_description = other._description;
+    if (this != &other)
         this->_executeFunc = other._executeFunc;
-    }
-    return *this;
+    return (*this);
 }
 
 const std::string &Command::getAlias() const{ return (_alias); }	
 const std::string &Command::getDescription() const { return (_description); }
 
-void Command::Execute(Client &client, const Parser &parser) const
-{
+void Command::Execute(Client &client, const Parser &parser) const {
 	if (_executeFunc)
 		_executeFunc(client.getServer(), client, parser);
 }

@@ -8,14 +8,11 @@
 #include <cstdio>
 #include <cstring>
 #include <sstream>
-#include "../headers/Parser.hpp"
 #include "../headers/Server.hpp"
+#include "../headers/Parser.hpp"
 #include "../headers/Client.hpp"
 #include "../headers/Commands.hpp"
-#include "../headers/ClientManager.hpp"
-#include "../headers/CommandManager.hpp"
-#include "../headers/ChannelManager.hpp"
-
+#include "../headers/Command.hpp"
 
 Server::~Server() {
     for (size_t i = 0; i < _socketPoolFds.size(); i++)
@@ -43,14 +40,12 @@ Server &Server::operator=(const Server &other) {
     return *this;
 }
 
-const std::string &Server::getPassword() const { return _password; }
-const std::string &Server::getName() const { return _name; }
-const ChannelManager &Server::getChannelManager() const { return _channelManager; }
-const ClientManager &Server::getClientManager() const { return _clientManager; }
-const CommandManager &Server::getCommandManager() const { return _commandManager; }
-ChannelManager &Server::getChannelManager() { return _channelManager; }
-ClientManager &Server::getClientManager() { return _clientManager; }
-CommandManager &Server::getCommandManager() { return _commandManager; }
+int	Server::getPort() const { return (_port); }
+const std::string &Server::getPassword() const { return (_password); }
+const std::string &Server::getName() const { return (_name); }
+ChannelManager &Server::getChannelManager() { return (_channelManager); }
+ClientManager &Server::getClientManager() { return (_clientManager); }
+CommandManager &Server::getCommandManager() { return (_commandManager); }
 
 void Server::Initialize() {
 	_socketFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -128,7 +123,7 @@ void Server::handleNewData(int socketFd)
         if (!client) return;
 
 		client->appendBuffer(std::string(buffer, valread));
-		std::string clientBuffer = client->getSocketBuffer();
+		std::string clientBuffer = client->getBuffer();
 		while (1)
 		{
 			size_t pos = clientBuffer.find("\n");
@@ -148,7 +143,7 @@ void Server::handleNewData(int socketFd)
 			if (!client)
 				return;
 			client->eraseBuffer(0, pos + 1); 
-			clientBuffer = client->getSocketBuffer();
+			clientBuffer = client->getBuffer();
 		}
 	}
 	else if (valread == 0)
@@ -179,7 +174,7 @@ void Server::onClientMessage(Client &client, std::string data) {
 	_commandManager.executeCommand(client, parsedCmd);
 }
 
-void Server::reply(Client &client, int code, std::string msg) {
+void Server::reply(Client &client, int code, const std::string &msg) const {
     std::stringstream ss;
 	if (code < 10)
 		ss << "00";
@@ -206,21 +201,21 @@ void Server::initializeCommands()
 void Server::disconnectClient(Client &client)
 {
 	int	fd = client.getSocketFd();
+	_channelManager.removeClientFromAllChannels(client);
 	close(fd);
-	for (size_t i = 0; i < _socketPoolFds.size(); ++i) {
+	for (size_t i = 0; i < _socketPoolFds.size(); ++i) 
         if (_socketPoolFds[i].fd == fd) {
             _socketPoolFds.erase(_socketPoolFds.begin() + i);
             break;
         }
-    }
 	_clientManager.removeClient(fd);
 }
 
-bool Server::isNickInUse(const std::string &nick)
+bool Server::isNickInUse(const std::string &nick) const
 {
-    std::map<int, Client> &clients = _clientManager.getClients();
+    const std::map<int, Client> &clients = _clientManager.getClients();
     
-    std::map<int, Client>::iterator it;
+    std::map<int, Client>::const_iterator it;
     for (it = clients.begin(); it != clients.end(); ++it)
         if (it->second.getNickname() == nick)
             return true;

@@ -3,20 +3,34 @@
 #include "../headers/Client.hpp"
 
 ChannelManager::~ChannelManager() {
-	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) 
-	delete it->second;
+	for (t_channelsMap::iterator it = _channels.begin(); it != _channels.end(); ++it) 
+		delete it->second;
 }
-ChannelManager::ChannelManager(Server &server) : _server(&server) {}
+ChannelManager::ChannelManager(const Server &server) : _server(&server) {}
 
 ChannelManager::ChannelManager(const ChannelManager& other) {
 	*this = other;
 }
 
 ChannelManager& ChannelManager::operator=(const ChannelManager &other) {
-	if (this != &other)
-		for (std::map<std::string, Channel*>::const_iterator it = other._channels.begin(); it != other._channels.end(); ++it)
+	if (this != &other) {
+		for (t_channelsMap::iterator it = _channels.begin(); it != _channels.end(); ++it)
+			delete it->second;
+		_channels.clear();
+		for (t_channelsMap::const_iterator it = other._channels.begin(); it != other._channels.end(); ++it)
 			_channels[it->first] = new Channel(*(it->second));
+		_server = other._server;
+	}
 	return (*this);
+}
+
+const t_channelsMap&	ChannelManager::getChannels() const { return _channels; }
+
+Channel*	ChannelManager::getChannelByName(const std::string& name) const {
+	t_channelsMap::const_iterator it = _channels.find(name);
+	if (it != _channels.end())
+		return (it->second);
+	return (NULL);
 }
 
 Channel*	ChannelManager::createChannel(const std::string& name, Client &creator) {
@@ -24,25 +38,16 @@ Channel*	ChannelManager::createChannel(const std::string& name, Client &creator)
 	_channels[name] = channel;
 
 	channel->addOperator(&creator);
-	return channel;
+	return (channel);
 }
 
-void		ChannelManager::deleteChannel(const std::string& name) {
-	std::map<std::string, Channel*>::iterator it = _channels.find(name);
+void	ChannelManager::deleteChannel(const std::string& name) {
+	t_channelsMap::iterator it = _channels.find(name);
 	if (it != _channels.end()) {
 		delete it->second;
 		_channels.erase(it);
 	}
 }
-
-Channel*	ChannelManager::getChannelByName(const std::string& name) {
-	std::map<std::string, Channel*>::iterator it = _channels.find(name);
-	if (it != _channels.end())
-		return it->second;
-	return NULL;
-}
-
-std::map<std::string, Channel*>&	ChannelManager::getChannels() { return _channels; }
 
 void ChannelManager::joinChannel(const std::string& channelName, const std::string& key, Client &client) {
 	Channel* channel = getChannelByName(channelName);
@@ -69,7 +74,7 @@ void ChannelManager::joinChannel(const std::string& channelName, const std::stri
 }
 
 void ChannelManager::removeClientFromAllChannels(Client &client) {
-	std::map<std::string, Channel*>::iterator it = _channels.begin();
+	t_channelsMap::iterator it = _channels.begin();
 	while (it != _channels.end()) {
 		Channel* channel = it->second;
 		if (channel->isClientInChannel(&client)) {
@@ -78,7 +83,7 @@ void ChannelManager::removeClientFromAllChannels(Client &client) {
 			channel->removeClient(&client);
 			channel->removeOperator(&client);
 			
-			if (channel->getClintCount() == 0) {
+			if (channel->getClientCount() == 0) {
 				std::string channelName = channel->getName();
 				++it;
 				deleteChannel(channelName);
