@@ -60,7 +60,7 @@ void Channel::removeOperator(Client* client) {
 	if (!hasOperators() && !getClients().empty()) {
 		Client* newOp = getClients()[0]; 
 		addOperator(newOp);
-		std::string msg = ":" + client->getServer().getName() + " MODE " + getName() + " +o " + newOp->getNickname();
+		std::string msg = ":" + newOp->getServer().getName() + " MODE " + getName() + " +o " + newOp->getNickname();
 		broadcast(msg, NULL);
 	}
 }
@@ -81,10 +81,10 @@ void Channel::removeInvite(const std::string& nickname) {
 std::string Channel::getClientListString() const {
 	std::string clientList;
 	for (size_t i = 0; i < _clients.size(); ++i) {
-		if (isOperator(_clients[i]))
-			clientList += "@";
 		if (i > 0)
 			clientList += " ";
+		if (isOperator(_clients[i]))
+			clientList += "@";
 		clientList += _clients[i]->getNickname();
 	}
 	return (clientList);

@@ -17,7 +17,7 @@ void Command_Privmsg(Server &server, Client &client, const Parser &parser) {
     std::string message = parser.getTrailing();
     std::string formattedMsg = ":" + client.getPrefix() + " PRIVMSG " + target + " :" + message;
 
-    if (target[0] == '#') {
+    if (target[0] == '#' || target[0] == '&') {
         Channel* channel = server.getChannelManager().getChannelByName(target);
         if (!channel) {
             server.reply(client, 403, target + " :No such channel");

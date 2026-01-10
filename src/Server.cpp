@@ -197,6 +197,7 @@ void Server::initializeCommands()
 	_commandManager.registerCommand(Command("TOPIC", "TOPIC COMMAND", Command_Topic));
 	_commandManager.registerCommand(Command("MODE", "MODE COMMAND", Command_Mode));
 	_commandManager.registerCommand(Command("WHO", "WHO COMMAND", Command_Who));
+	_commandManager.registerCommand(Command("LIST", "LIST COMMAND", Command_List));
 }
 
 void Server::disconnectClient(Client &client)

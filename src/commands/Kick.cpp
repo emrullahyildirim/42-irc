@@ -1,6 +1,7 @@
 #include "../../headers/Client.hpp"
 #include "../../headers/Server.hpp"
 #include "../../headers/Channel.hpp"
+#include "../../headers/ChannelManager.hpp"
 #include "../../headers/Parser.hpp"
 
 void Command_Kick(Server &server, Client &client, const Parser &parser)
@@ -44,4 +45,7 @@ void Command_Kick(Server &server, Client &client, const Parser &parser)
 	std::string kickMsg = ":" + client.getPrefix() + " KICK " + channelName + " " + targetNick + " :" + reason;
 	channel->broadcast(kickMsg, NULL);
 	channel->removeClient(target);
+	
+	if (channel->getClientCount() == 0)
+		server.getChannelManager().deleteChannel(channelName);
 }

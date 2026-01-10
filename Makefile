@@ -28,7 +28,8 @@ SRCS =	$(SRCDIR)/main.cpp \
 		$(SRCDIR)/commands/Invite.cpp \
 		$(SRCDIR)/commands/Topic.cpp \
 		$(SRCDIR)/commands/Mode.cpp \
-		$(SRCDIR)/commands/Who.cpp
+		$(SRCDIR)/commands/Who.cpp \
+		$(SRCDIR)/commands/List.cpp
 
 OBJS = $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 

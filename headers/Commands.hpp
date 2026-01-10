@@ -17,5 +17,6 @@ void Command_Invite(Server &server, Client &client, const Parser &parser);
 void Command_Topic(Server &server, Client &client, const Parser &parser);
 void Command_Mode(Server &server, Client &client, const Parser &parser);
 void Command_Who(Server &server, Client &client, const Parser &parser);
+void Command_List(Server &server, Client &client, const Parser &parser);
 
 #endif

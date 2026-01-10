@@ -26,12 +26,10 @@ class Server
 		ChannelManager				_channelManager;
 
 		void initializeCommands();
-        void handlePollEvents(struct pollfd& pollfd);
         void handleNewConnection();
         void handleNewData(int fd);
         void onClientDisconnect(int socketFd);
         void onClientMessage(Client &client, std::string data);
-        void parseCommand(const std::string &message, std::string &command, std::string &args);
 		
         Server(const Server &other);
         Server& operator=(const Server &other);
@@ -52,7 +50,6 @@ class Server
 		
         void 						Initialize();
         void 						Run();
-		void						Stop();
 		
 		void 						reply(Client &client, int code, const std::string &msg) const;
 		void 						disconnectClient(Client &client);
