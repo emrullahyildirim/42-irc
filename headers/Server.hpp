@@ -3,9 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <string>
 #include <poll.h>
-#include <exception>
 
 #include "ClientManager.hpp"
 #include "CommandManager.hpp"

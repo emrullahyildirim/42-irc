@@ -1,13 +1,11 @@
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include <cstdio>
-#include <cstring>
 #include <sstream>
+#include <iostream>
 #include "../headers/Server.hpp"
 #include "../headers/Parser.hpp"
 #include "../headers/Client.hpp"
@@ -192,6 +190,7 @@ void Server::initializeCommands()
 	_commandManager.registerCommand(Command("NICK", "NICK COMMAND", Command_Nick));
 	_commandManager.registerCommand(Command("USER", "USER COMMAND", Command_User));
 	_commandManager.registerCommand(Command("JOIN", "JOIN COMMAND", Command_Join));
+	_commandManager.registerCommand(Command("PART", "PART COMMAND", Command_Part));
 	_commandManager.registerCommand(Command("PRIVMSG", "PRIVMSG COMMAND", Command_Privmsg));
 	_commandManager.registerCommand(Command("KICK", "KICK COMMAND", Command_Kick));
 	_commandManager.registerCommand(Command("INVITE", "INVITE COMMAND", Command_Invite));

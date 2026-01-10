@@ -74,13 +74,39 @@ void ChannelManager::joinChannel(const std::string& channelName, const std::stri
 	_server->reply(client, 366, channelName + " :End of /NAMES list");
 }
 
+void ChannelManager::leaveChannel(const std::string& channelName, Client &client, const std::string& reason) {
+	Channel* channel = getChannelByName(channelName);
+	if (!channel)
+		return;
+	
+	if (!channel->isClientInChannel(&client))
+		return;
+	
+	std::string partMsg = ":" + client.getPrefix() + " PART " + channelName;
+	if (!reason.empty())
+		partMsg += " :" + reason;
+	
+	channel->broadcast(partMsg, NULL);
+	channel->removeClient(&client);
+	
+	if (channel->getClientCount() == 0)
+		deleteChannel(channelName);
+}
+
 void ChannelManager::removeClientFromAllChannels(Client &client) {
-	t_channelsMap::iterator it = _channels.begin();
-	while (it != _channels.end()) {
+	std::string quitMsg = ":" + client.getPrefix() + " QUIT :Client disconnected";
+	
+	std::vector<std::string> channelsToDelete;
+	for (t_channelsMap::iterator it = _channels.begin(); it != _channels.end(); ++it) {
 		Channel* channel = it->second;
-		if (channel->isClientInChannel(&client))
+		if (channel->isClientInChannel(&client)) {
+			channel->broadcast(quitMsg, &client);
 			channel->removeClient(&client);
-		else 
-			it++;
+			if (channel->getClientCount() == 0)
+				channelsToDelete.push_back(it->first);
+		}
 	}
+	
+	for (size_t i = 0; i < channelsToDelete.size(); ++i)
+		deleteChannel(channelsToDelete[i]);
 }

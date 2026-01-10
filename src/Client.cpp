@@ -1,4 +1,5 @@
 #include <sys/socket.h>
+#include <iostream>
 #include "../headers/Client.hpp"
 #include "../headers/Server.hpp"
 

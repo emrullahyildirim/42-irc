@@ -1,8 +1,8 @@
 #ifndef COMMANDMANAGER_HPP
 #define COMMANDMANAGER_HPP
 
-#include <iostream>
 #include <map>
+#include <string>
 
 class Client;
 class Command;
