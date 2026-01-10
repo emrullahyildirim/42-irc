@@ -152,7 +152,7 @@ void Server::onClientDisconnect(int socketFd)
 }
 
 void Server::onClientMessage(Client &client, std::string data) {
-	std::cout << "Gelen: " << data << std::endl;
+	std::cout << "[RECV]: " << data << std::endl;
 	Parser parsedCmd(data);
 	
 	_commandManager.executeCommand(client, parsedCmd);
@@ -181,6 +181,10 @@ void Server::initializeCommands()
 	_commandManager.registerCommand(Command("JOIN", "JOIN COMMAND", Command_Join));
 	_commandManager.registerCommand(Command("PRIVMSG", "PRIVMSG COMMAND", Command_Privmsg));
 	_commandManager.registerCommand(Command("KICK", "KICK COMMAND", Command_Kick));
+	_commandManager.registerCommand(Command("INVITE", "INVITE COMMAND", Command_Invite));
+	_commandManager.registerCommand(Command("TOPIC", "TOPIC COMMAND", Command_Topic));
+	_commandManager.registerCommand(Command("MODE", "MODE COMMAND", Command_Mode));
+	_commandManager.registerCommand(Command("WHO", "WHO COMMAND", Command_Who));
 }
 
 void Server::disconnectClient(Client &client)

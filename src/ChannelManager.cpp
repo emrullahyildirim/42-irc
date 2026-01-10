@@ -38,16 +38,30 @@ void	ChannelManager::deleteChannel(const std::string& name) {
 void ChannelManager::joinChannel(const std::string& channelName, const std::string& key, Client &client) {
 	Channel* channel = getChannelByName(channelName);
 	
-	if (!channel)
+	if (!channel) {
 		channel = createChannel(channelName, client);
-	else if (channel->isClientInChannel(&client))
-		return ;
-	else if (!channel->getPassword().empty() && key != channel->getPassword()) {
-		_server->reply(client, 475, channelName + " :Cannot join channel (+k)");
-		return;
+	} else {
+		if (channel->isClientInChannel(&client))
+			return;
+		
+		if (channel->isInviteOnly() && !channel->isInvited(client.getNickname())) {
+			_server->reply(client, 473, channelName + " :Cannot join channel (+i)");
+			return;
+		}
+		
+		if (!channel->getPassword().empty() && key != channel->getPassword()) {
+			_server->reply(client, 475, channelName + " :Cannot join channel (+k)");
+			return;
+		}
+		
+		if (channel->getLimit() > 0 && channel->getClientCount() >= channel->getLimit()) {
+			_server->reply(client, 471, channelName + " :Cannot join channel (+l)");
+			return;
+		}
 	}
 
 	channel->addClient(&client);
+	channel->removeInvite(client.getNickname());
 	std::string joinMsg = ":" + client.getPrefix() + " JOIN " + channelName;
 	client.sendMessage(joinMsg);
     channel->broadcast(joinMsg, &client); 
