@@ -14,11 +14,12 @@ class CommandManager
 {
     private:
         t_CommandsMap			_commands;
+        
+        CommandManager(const CommandManager& other);            
+        CommandManager &operator=(const CommandManager& other);
     public:
 		~CommandManager();
         CommandManager();
-        CommandManager(const CommandManager& other);            
-        CommandManager &operator=(const CommandManager& other);
         
 		const t_CommandsMap&	getCommands() const;
 

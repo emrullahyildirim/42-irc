@@ -12,12 +12,13 @@ typedef void (*t_executeFunc)(Server &server, Client &client, const Parser &pars
 class Command
 {
 	private:
-		const std::string	_alias;
-		const std::string	_description;
-		t_executeFunc		_executeFunc;
+		std::string		_alias;
+		std::string		_description;
+		t_executeFunc	_executeFunc;
 	public:
 		~Command();
-		Command(const std::string &alias, const std::string &description, t_executeFunc t_executeFunc);
+		Command();
+		Command(const std::string &alias, const std::string &description, t_executeFunc executeFunc);
 		Command(const Command& other);
 		Command &operator=(const Command& other);
 

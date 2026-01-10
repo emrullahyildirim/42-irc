@@ -6,23 +6,6 @@ Channel::~Channel() {}
 Channel::Channel(const std::string &name) 
 : _name(name), _topic(""), _password(""), _limit(0) {}
 
-Channel::Channel(const Channel& other) {
-	*this = other;
-}
-
-Channel& Channel::operator=(const Channel &other) {
-	if (this != &other)
-	{
-		_name = other._name;
-		_topic = other._topic;
-		_password = other._password;
-		_limit = other._limit;
-		_clients = other._clients;
-		_operators = other._operators;
-	}
-	return (*this);
-}
-
 const std::string &Channel::getName() const { return (_name); }
 const std::string &Channel::getPassword() const { return (_password); }
 const std::string &Channel::getTopic() const { return (_topic); }

@@ -46,7 +46,7 @@ class Client
         const std::string&	getBuffer() const;
 
 		
-        void				CheckRegisteration();
+        void				checkRegistration();
 		std::string			getPrefix() const;
 		static bool			isValidNickname(const std::string& nick);
 

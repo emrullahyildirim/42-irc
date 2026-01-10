@@ -13,11 +13,12 @@ class ClientManager
 {
 	private:
 		t_clientsMap		_clients;
+		
+		ClientManager(const ClientManager& other);
+		ClientManager &operator=(const ClientManager& other);
 	public:
 		~ClientManager();
 		ClientManager();
-		ClientManager(const ClientManager& other);
-		ClientManager &operator=(const ClientManager& other);
 		
 		t_clientsMap&		getClients();
 		const t_clientsMap&	getClients() const;
@@ -28,7 +29,7 @@ class ClientManager
 		
 		Client*				getClient(int socketFd);
 		const Client*		getClient(int socketFd) const;
-		Client*				getClientByNick(std::string &name) const;
+		Client*				getClientByNick(const std::string &name) const;
 };
 
 #endif

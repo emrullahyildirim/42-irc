@@ -24,22 +24,6 @@ Server::Server(std::string name, int serverPort, std::string serverPassword)
 	initializeCommands();
 }
 
-Server::Server(const Server &other) : _channelManager(*this) { 
-	*this = other; 
-	initializeCommands();
-}
-
-Server &Server::operator=(const Server &other) {
-    if (this != &other) {
-		_name = other._name;
-        _port = other._port;
-        _password = other._password;
-        _socketFd = other._socketFd;
-        _socketPoolFds = other._socketPoolFds;
-    }
-    return *this;
-}
-
 int	Server::getPort() const { return (_port); }
 const std::string &Server::getPassword() const { return (_password); }
 const std::string &Server::getName() const { return (_name); }
@@ -146,7 +130,7 @@ void Server::handleNewData(int socketFd)
 			clientBuffer = client->getBuffer();
 		}
 	}
-	else if (valread == 0)
+	else if (valread == 0 || (errno != EAGAIN && errno != EWOULDBLOCK))
 		onClientDisconnect(socketFd);
 }
 

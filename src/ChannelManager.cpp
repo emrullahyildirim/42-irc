@@ -8,22 +8,6 @@ ChannelManager::~ChannelManager() {
 }
 ChannelManager::ChannelManager(const Server &server) : _server(&server) {}
 
-ChannelManager::ChannelManager(const ChannelManager& other) {
-	*this = other;
-}
-
-ChannelManager& ChannelManager::operator=(const ChannelManager &other) {
-	if (this != &other) {
-		for (t_channelsMap::iterator it = _channels.begin(); it != _channels.end(); ++it)
-			delete it->second;
-		_channels.clear();
-		for (t_channelsMap::const_iterator it = other._channels.begin(); it != other._channels.end(); ++it)
-			_channels[it->first] = new Channel(*(it->second));
-		_server = other._server;
-	}
-	return (*this);
-}
-
 const t_channelsMap&	ChannelManager::getChannels() const { return _channels; }
 
 Channel*	ChannelManager::getChannelByName(const std::string& name) const {
@@ -34,6 +18,8 @@ Channel*	ChannelManager::getChannelByName(const std::string& name) const {
 }
 
 Channel*	ChannelManager::createChannel(const std::string& name, Client &creator) {
+	if (_channels.find(name) != _channels.end())
+        return _channels[name];
 	Channel* channel = new Channel(name);
 	_channels[name] = channel;
 

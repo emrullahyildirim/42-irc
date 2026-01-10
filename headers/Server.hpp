@@ -33,11 +33,11 @@ class Server
         void onClientMessage(Client &client, std::string data);
         void parseCommand(const std::string &message, std::string &command, std::string &args);
 		
+        Server(const Server &other);
+        Server& operator=(const Server &other);
 	public:
 		~Server();
         Server(std::string name, int port, std::string password);
-        Server(const Server &other);
-        Server& operator=(const Server &other);
 		
 		int							getPort() const;
         const std::string&			getPassword() const;

@@ -19,11 +19,12 @@ class Channel
 		
 		t_clientVector			_clients;
 		t_clientVector			_operators;
+
+		Channel(const Channel& other);
+		Channel& operator=(const Channel &other);
 	public:
 		~Channel();
 		Channel(const std::string &name);
-		Channel(const Channel& other);
-		Channel& operator=(const Channel &other);
 
 		const std::string 		&getName() const;
 		const std::string 		&getPassword() const;

@@ -17,5 +17,5 @@ void Command_User(Server &server, Client &client, const Parser& parser)
 
 	client.setUsername(parser.getParams()[0]);
     client.setRealname(parser.getTrailing());
-    client.CheckRegisteration();
+    client.checkRegistration();
 }

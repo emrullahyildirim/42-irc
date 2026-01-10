@@ -27,5 +27,5 @@ void Command_Pass(Server &server, Client &client, const Parser &parser) {
     }
 
     client.setAuthenticated(true);
-	client.CheckRegisteration();
+	client.checkRegistration();
 }

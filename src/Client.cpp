@@ -68,7 +68,7 @@ bool Client::isValidNickname(const std::string& nick) {
     return true;
 }
 
-void Client::CheckRegisteration()
+void Client::checkRegistration()
 {
 	if (_isRegistered)
     	return;

@@ -8,16 +8,6 @@ CommandManager::~CommandManager() {}
 
 CommandManager::CommandManager() {}
 
-CommandManager::CommandManager(const CommandManager& other) {
-	*this = other;
-}
-
-CommandManager& CommandManager::operator=(const CommandManager& other) {
-	if (this != &other)
-		_commands = other._commands;
-	return (*this);
-}
-
 const t_CommandsMap&	CommandManager::getCommands() const { return (_commands); }
 
 void CommandManager::registerCommand(const Command &cmd)

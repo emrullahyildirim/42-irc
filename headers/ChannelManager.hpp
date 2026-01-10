@@ -14,11 +14,12 @@ class ChannelManager
 	private:
 		const Server*		_server;
 		t_channelsMap		_channels;
+		
+		ChannelManager(const ChannelManager& other);
+		ChannelManager& operator=(const ChannelManager &other);
 	public:
 		~ChannelManager();
 		ChannelManager(const Server &server);
-		ChannelManager(const ChannelManager& other);
-		ChannelManager& operator=(const ChannelManager &other);
 
 		Channel*			getChannelByName(const std::string& name) const;
 		const t_channelsMap	&getChannels() const;

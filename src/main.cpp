@@ -11,10 +11,10 @@ int main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 
-	Server server = Server("Manifest", atoi(argv[1]), argv[2]);
+	Server server("Manifest", atoi(argv[1]), argv[2]);
 	try {
 		server.Initialize();
-		server.Run();
+		server.Run();	
 	} catch (const std::exception &e) {
 		std::cerr << "Server runtime error: " << e.what() << std::endl;
 		return (EXIT_FAILURE);

@@ -35,20 +35,6 @@ Parser::Parser(std::string raw) : _raw(raw) {
 		_command[i] = std::toupper(_command[i]);
 }
 
-Parser::Parser(const Parser& other) {
-	*this = other;
-}
-
-Parser &Parser::operator=(const Parser& other) {
-	if (this != &other) {
-		_raw = other._raw;
-		_command = other._command;
-		_params = other._params;
-		_trailing = other._trailing;
-	}
-	return (*this);
-}
-
 const std::string &Parser::getRaw() const {return (_raw);}
 const std::string &Parser::getCommand() const {return (_command);}
 const std::string &Parser::getTrailing() const {return (_trailing);}

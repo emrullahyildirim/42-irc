@@ -6,16 +6,6 @@ ClientManager::~ClientManager() {}
 
 ClientManager::ClientManager() {}
 
-ClientManager::ClientManager(const ClientManager& other) {
-	*this = other;
-}
-
-ClientManager &ClientManager::operator=(const ClientManager& other) {
-	if (this != &other)
-		this->_clients = other._clients;
-	return (*this);
-}
-
 void ClientManager::addClient(Server &server, int socketFd) {
     if (_clients.find(socketFd) == _clients.end())
         _clients.insert(std::make_pair(socketFd, Client(server, socketFd)));
@@ -47,7 +37,7 @@ const Client* ClientManager::getClient(int socketFd) const {
     return &(it->second);
 }
 
-Client* ClientManager::getClientByNick(std::string &name) const {
+Client* ClientManager::getClientByNick(const std::string &name) const {
 	for (t_clientsMap::const_iterator it = _clients.begin(); it != _clients.end(); ++it)
 		if (it->second.getNickname() == name) 
 			return const_cast<Client*>(&(it->second));

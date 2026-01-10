@@ -13,11 +13,12 @@ class Parser
 		std::string					_command;
 		t_paramsVector				_params;
 		std::string					_trailing;
+		
+		Parser(const Parser& raw);
+		Parser &operator=(const Parser& raw);
 	public:
 		~Parser();
 		Parser(std::string raw);
-		Parser(const Parser& raw);
-		Parser &operator=(const Parser& raw);
 
 		const std::string				&getRaw() const;
 		const std::string				&getCommand() const;

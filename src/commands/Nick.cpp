@@ -24,7 +24,7 @@ void Command_Nick(Server &server, Client &client, const Parser &parser)
 	client.setNickname(nick);
 
 	bool isRegistered = client.getIsRegistered();
-	client.CheckRegisteration();
+	client.checkRegistration();
 	if (isRegistered)
 		client.sendMessage(":" + oldNick + "!" + client.getUsername() + "@" + client.getHostname() + " NICK :" + nick);
 }
