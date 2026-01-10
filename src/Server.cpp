@@ -140,8 +140,8 @@ void Server::onClientDisconnect(int socketFd)
 	Client *client = _clientManager.getClient(socketFd);
 	if (client) {
 		_channelManager.removeClientFromAllChannels(*client);
-	}
-	
+}
+
 	for (std::vector<struct pollfd>::iterator it = _socketPoolFds.begin(); it != _socketPoolFds.end(); ++it)
         if (it->fd == socketFd) {
             _socketPoolFds.erase(it);
@@ -180,6 +180,7 @@ void Server::initializeCommands()
 	_commandManager.registerCommand(Command("USER", "USER COMMAND", Command_User));
 	_commandManager.registerCommand(Command("JOIN", "JOIN COMMAND", Command_Join));
 	_commandManager.registerCommand(Command("PRIVMSG", "PRIVMSG COMMAND", Command_Privmsg));
+	_commandManager.registerCommand(Command("KICK", "KICK COMMAND", Command_Kick));
 }
 
 void Server::disconnectClient(Client &client)
@@ -191,7 +192,7 @@ void Server::disconnectClient(Client &client)
         if (_socketPoolFds[i].fd == fd) {
             _socketPoolFds.erase(_socketPoolFds.begin() + i);
             break;
-        }
+    }
 	_clientManager.removeClient(fd);
 }
 

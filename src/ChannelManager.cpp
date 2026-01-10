@@ -4,7 +4,7 @@
 
 ChannelManager::~ChannelManager() {
 	for (t_channelsMap::iterator it = _channels.begin(); it != _channels.end(); ++it) 
-		delete it->second;
+	delete it->second;
 }
 ChannelManager::ChannelManager(const Server &server) : _server(&server) {}
 

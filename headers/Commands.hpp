@@ -11,5 +11,6 @@ void Command_Nick(Server &server, Client &client, const Parser &parser);
 void Command_User(Server &server, Client &client, const Parser &parser);
 void Command_Join(Server &server, Client &client, const Parser &parser);
 void Command_Privmsg(Server &server, Client &client, const Parser &parser);
+void Command_Kick(Server &server, Client &client, const Parser &parser);
 
 #endif

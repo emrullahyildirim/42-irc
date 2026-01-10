@@ -46,6 +46,6 @@ class Channel
 		
 		void 					broadcast(const std::string& message, Client* except = NULL);
 		std::string				getClientListString() const;
-	};
+};
 
 #endif

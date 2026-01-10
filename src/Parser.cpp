@@ -4,7 +4,7 @@ Parser::~Parser() {}
 
 Parser::Parser(std::string raw) : _raw(raw) {	
 	std::string	head(raw);
-	size_t	trailingPos = raw.find(" :");
+	size_t	trailingPos = raw.find(" :", 1);
 	if (trailingPos != std::string::npos)
 	{	
 		head = raw.substr(0, trailingPos);

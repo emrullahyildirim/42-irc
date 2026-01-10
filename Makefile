@@ -22,7 +22,8 @@ SRCS =	$(SRCDIR)/main.cpp \
 		$(SRCDIR)/commands/User.cpp \
 		$(SRCDIR)/commands/Cap.cpp \
 		$(SRCDIR)/commands/Ping.cpp \
-		$(SRCDIR)/commands/Join.cpp
+		$(SRCDIR)/commands/Join.cpp \
+		$(SRCDIR)/commands/Kick.cpp
 
 OBJS = $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 

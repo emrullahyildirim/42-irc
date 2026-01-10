@@ -9,7 +9,7 @@ Command::Command(const std::string &alias, const std::string &description, t_exe
 	: _alias(alias), _description(description), _executeFunc(executeFunc) {}
 
 Command::Command(const Command& other) {
-	*this = other;
+    *this = other;
 }
 
 Command& Command::operator=(const Command& other) {
@@ -18,7 +18,7 @@ Command& Command::operator=(const Command& other) {
 		_description = other._description;
 		_executeFunc = other._executeFunc;
 	}
-	return (*this);
+    return (*this);
 }
 
 const std::string &Command::getAlias() const { return (_alias); }	
