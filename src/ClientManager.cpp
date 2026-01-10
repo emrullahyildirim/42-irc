@@ -12,6 +12,7 @@ void ClientManager::addClient(Server &server, int socketFd) {
 }
 
 void ClientManager::removeClient(int socketFd) {
+	
 	_clients.erase(socketFd);
 }
 

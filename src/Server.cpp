@@ -153,7 +153,7 @@ void Server::onClientDisconnect(int socketFd)
 	Client *client = _clientManager.getClient(socketFd);
 	if (client) {
 		_channelManager.removeClientFromAllChannels(*client);
-}
+	}
 
 	for (std::vector<struct pollfd>::iterator it = _socketPoolFds.begin(); it != _socketPoolFds.end(); ++it)
         if (it->fd == socketFd) {

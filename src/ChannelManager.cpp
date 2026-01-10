@@ -68,28 +68,19 @@ void ChannelManager::joinChannel(const std::string& channelName, const std::stri
 
 	if (!channel->getTopic().empty())
     	_server->reply(client, 332, channelName + " :" + channel->getTopic());
-		
+	else 
+		_server->reply(client, 331, channelName + " No topic is set");
 	_server->reply(client, 353, "= " + channelName + " :" + channel->getClientListString());
-	_server->reply(client, 366, channelName + " :End of /NAMES list.");
+	_server->reply(client, 366, channelName + " :End of /NAMES list");
 }
 
 void ChannelManager::removeClientFromAllChannels(Client &client) {
 	t_channelsMap::iterator it = _channels.begin();
 	while (it != _channels.end()) {
 		Channel* channel = it->second;
-		if (channel->isClientInChannel(&client)) {
-			std::string partMsg = ":" + client.getPrefix() + " PART " + channel->getName();
-			channel->broadcast(partMsg, NULL);
+		if (channel->isClientInChannel(&client))
 			channel->removeClient(&client);
-			channel->removeOperator(&client);
-			
-			if (channel->getClientCount() == 0) {
-				std::string channelName = channel->getName();
-				++it;
-				deleteChannel(channelName);
-			} else
-				++it;
-		} else 
-			++it;
+		else 
+			it++;
 	}
 }

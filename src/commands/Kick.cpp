@@ -43,9 +43,5 @@ void Command_Kick(Server &server, Client &client, const Parser &parser)
 
 	std::string kickMsg = ":" + client.getPrefix() + " KICK " + channelName + " " + targetNick + " :" + reason;
 	channel->broadcast(kickMsg, NULL);
-
 	channel->removeClient(target);
-
-	if (channel->getClientCount() == 0)
-		server.getChannelManager().deleteChannel(channelName);
 }

@@ -58,6 +58,7 @@ class Channel
 		void					addInvite(const std::string& nickname);
 		void					removeInvite(const std::string& nickname);
 		
+		bool 					hasOperators();
 		void 					broadcast(const std::string& message, Client* except = NULL);
 		std::string				getClientListString() const;
 		std::string				getModeString() const;

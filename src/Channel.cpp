@@ -1,7 +1,8 @@
+#include <sstream>
+#include <algorithm>
 #include "../headers/Channel.hpp"
 #include "../headers/Client.hpp"
-#include <algorithm>
-#include <sstream>
+#include "../headers/Server.hpp"
 
 Channel::~Channel() {}
 Channel::Channel(const std::string &name) 
@@ -28,11 +29,10 @@ void Channel::addClient(Client* client) {
 }
 
 void Channel::removeClient(Client* client) {
-	removeOperator(client);
-	
 	t_clientVector::iterator it = std::find(_clients.begin(), _clients.end(), client);
 	if (it != _clients.end())
 		_clients.erase(it);
+	removeOperator(client);
 }
 
 bool Channel::isClientInChannel(Client *client) const {
@@ -56,6 +56,13 @@ void Channel::removeOperator(Client* client) {
 	t_clientVector::iterator it = std::find(_operators.begin(), _operators.end(), client);
 	if (it != _operators.end())
 		_operators.erase(it);
+	
+	if (!hasOperators() && !getClients().empty()) {
+		Client* newOp = getClients()[0]; 
+		addOperator(newOp);
+		std::string msg = ":" + client->getServer().getName() + " MODE " + getName() + " +o " + newOp->getNickname();
+		broadcast(msg, NULL);
+	}
 }
 
 bool Channel::isInvited(const std::string& nickname) const {
@@ -111,4 +118,8 @@ std::string Channel::getModeString() const {
 	if (modes == "+")
 		return ("");
 	return (modes + params);
+}
+
+bool	Channel::hasOperators() {
+	return (!_operators.empty());
 }
