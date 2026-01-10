@@ -26,7 +26,6 @@ void Command_Who(Server &server, Client &client, const Parser &parser)
 			if (channel->isOperator(member))
 				flags += "@";
 			
-			// 352 RPL_WHOREPLY: <channel> <user> <host> <server> <nick> <flags> :<hopcount> <realname>
 			std::string reply = target + " " + member->getUsername() + " " + 
 				member->getHostname() + " " + server.getName() + " " + 
 				member->getNickname() + " " + flags + " :0 " + member->getNickname();

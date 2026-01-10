@@ -14,6 +14,8 @@
 class Server
 {
     private:
+		static bool					_shutdown;
+
 		std::string					_name;
         int                         _port;
         std::string                 _password;
@@ -38,7 +40,7 @@ class Server
 	public:
 		~Server();
         Server(std::string name, int port, std::string password);
-		
+
 		int							getPort() const;
         const std::string&			getPassword() const;
 		const std::string&			getName() const; 
@@ -49,14 +51,17 @@ class Server
 		ChannelManager 				&getChannelManager() const;
 		ClientManager 				&getClientManager() const;
 		CommandManager 				&getCommandManager() const;		
-
+		
         void 						Initialize();
         void 						Run();
-
+		void						Stop();
+		
 		void 						reply(Client &client, int code, const std::string &msg) const;
 		void 						disconnectClient(Client &client);
-
+		
 		bool						isNickInUse(const std::string &nick) const;
+
+		static void					signalHandler(int signum);
 	};
 
 #endif

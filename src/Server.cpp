@@ -14,6 +14,14 @@
 #include "../headers/Commands.hpp"
 #include "../headers/Command.hpp"
 
+bool Server::_shutdown = false;
+
+void Server::signalHandler(int signum)
+{
+	(void)signum;
+	_shutdown = true;
+}
+
 Server::~Server() {
     for (size_t i = 0; i < _socketPoolFds.size(); i++)
         close(_socketPoolFds[i].fd);
@@ -53,19 +61,23 @@ void Server::Initialize() {
 	struct pollfd server_pfd;
 	server_pfd.fd = _socketFd;
 	server_pfd.events = POLLIN;
+	server_pfd.revents = 0;
 	_socketPoolFds.push_back(server_pfd);
 }
 
 void Server::Run()
 {
 	std::cout << "Server is running on port " << _port << std::endl;
-	while (true)
+	while (!_shutdown)
 	{
-		int ret = poll(&_socketPoolFds[0], _socketPoolFds.size(), -1);
-		if (ret < 0)
+		int ret = poll(&_socketPoolFds[0], _socketPoolFds.size(), 1000);
+		if (ret < 0) {
+			if (_shutdown)
+				break;
 			throw std::runtime_error("Poll error occurred!");
+		}
 
-		for (size_t i = 0; i < _socketPoolFds.size(); i++)
+		for (size_t i = 0; i < _socketPoolFds.size() && !_shutdown; i++)
 		{
 			if (!(_socketPoolFds[i].revents & POLLIN))
 				continue;
@@ -90,6 +102,7 @@ void Server::handleNewConnection()
 	struct pollfd client_pfd;
 	client_pfd.fd = newSocket;
 	client_pfd.events = POLLIN;
+	client_pfd.revents = 0;
 	_socketPoolFds.push_back(client_pfd);
 
 	_clientManager.addClient(*this, newSocket);
@@ -130,7 +143,7 @@ void Server::handleNewData(int socketFd)
 			clientBuffer = client->getBuffer();
 		}
 	}
-	else if (valread == 0 || (errno != EAGAIN && errno != EWOULDBLOCK))
+	else
 		onClientDisconnect(socketFd);
 }
 

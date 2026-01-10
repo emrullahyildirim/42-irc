@@ -53,7 +53,7 @@ void Client::sendMessage(std::string message)
 {
 	message += "\r\n";
 	send(_socketFd, message.c_str(), message.length(), 0);
-	std::cout << "[SEND]: " << message << std::endl;
+	std::cout << "[SEND]: " << message;
 }
 
 
