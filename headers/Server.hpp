@@ -6,8 +6,10 @@
 #include <string>
 #include <poll.h>
 #include <exception>
+
 #include "ClientManager.hpp" 
 #include "CommandManager.hpp"
+#include "ChannelManager.hpp"
 
 class Server
 {
@@ -19,12 +21,12 @@ class Server
         std::vector<struct pollfd>  _socketPoolFds;
         ClientManager               _clientManager;
 		CommandManager				_commandManager;
+		ChannelManager				_channelManager;
 
 		void initializeCommands();
         void handlePollEvents(struct pollfd& pollfd);
         void handleNewConnection();
         void handleNewData(int fd);
-        void onClientConnect(int socketFd);
         void onClientDisconnect(int socketFd);
         void onClientMessage(Client &client, std::string data);
         void parseCommand(const std::string &message, std::string &command, std::string &args);
@@ -37,7 +39,14 @@ class Server
 		
         const std::string &getPassword() const;
 		const std::string &getName() const; 
-		
+
+		ChannelManager &getChannelManager();
+		const ChannelManager &getChannelManager() const;
+		ClientManager &getClientManager();
+		const ClientManager &getClientManager() const;
+		CommandManager &getCommandManager();
+		const CommandManager &getCommandManager() const;		
+
         void Initialize();
         void Run();
 		void reply(Client &client, int code, const std::string msg);

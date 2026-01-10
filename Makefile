@@ -7,17 +7,33 @@ SRCDIR = src
 OBJDIR = objects
 BINDIR = bin
 
-SRCS = $(SRCDIR)/main.cpp $(SRCDIR)/Server.cpp $(SRCDIR)/Client.cpp $(SRCDIR)/Command.cpp $(SRCDIR)/CommandManager.cpp $(SRCDIR)/ClientManager.cpp $(SRCDIR)/Parser.cpp $(SRCDIR)/Commands.cpp
-OBJS = $(OBJDIR)/main.o $(OBJDIR)/Server.o $(OBJDIR)/Client.o $(OBJDIR)/Command.o $(OBJDIR)/CommandManager.o $(OBJDIR)/ClientManager.o $(OBJDIR)/Parser.o $(OBJDIR)/Commands.o
+SRCS =	$(SRCDIR)/main.cpp \
+		$(SRCDIR)/Server.cpp \
+		$(SRCDIR)/Client.cpp \
+		$(SRCDIR)/Command.cpp \
+		$(SRCDIR)/CommandManager.cpp \
+		$(SRCDIR)/ClientManager.cpp \
+		$(SRCDIR)/Channel.cpp \
+		$(SRCDIR)/Parser.cpp \
+		$(SRCDIR)/ChannelManager.cpp \
+		$(SRCDIR)/commands/Privmsg.cpp \
+		$(SRCDIR)/commands/Pass.cpp \
+		$(SRCDIR)/commands/Nick.cpp \
+		$(SRCDIR)/commands/User.cpp \
+		$(SRCDIR)/commands/Cap.cpp \
+		$(SRCDIR)/commands/Ping.cpp \
+		$(SRCDIR)/commands/Join.cpp
+
+OBJS = $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
 all: $(BINDIR)/$(NAME)
 
 $(BINDIR)/$(NAME): $(OBJS)
-	mkdir -p $(BINDIR)
+	@mkdir -p $(BINDIR)
 	$(CXX) $(CPPFLAGS) $(OBJS) -o $(BINDIR)/$(NAME)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	mkdir -p $(OBJDIR)
+	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean:

@@ -78,6 +78,9 @@ void Client::CheckRegisteration()
 		_server->reply(*this, 3, ":This server was created today.");
 		_server->reply(*this, 4, ":" + _server->getName() + " 1.0 i o oiws obtkmlvsn");
 	}
+}
 
-
+std::string Client::getPrefix() const
+{
+	return (_nickname + "!" + _username + "@" + _hostname);
 }

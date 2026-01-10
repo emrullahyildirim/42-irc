@@ -41,6 +41,15 @@ Client* ClientManager::getClient(int socketFd) {
     return &(it->second);
 }
 
+Client* ClientManager::getClientByNick(std::string &name) const {
+	for (std::map<int, Client>::const_iterator it = _clients.begin(); it != _clients.end(); ++it) {
+		if (it->second.getNickname() == name) {
+			return const_cast<Client*>(&(it->second));
+		}
+	}
+	return NULL;
+}
+
 const Client* ClientManager::getClient(int socketFd) const {
     std::map<int, Client>::const_iterator it = _clients.find(socketFd);
 

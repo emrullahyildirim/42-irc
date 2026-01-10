@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
@@ -11,6 +12,9 @@
 #include "../headers/Server.hpp"
 #include "../headers/Client.hpp"
 #include "../headers/Commands.hpp"
+#include "../headers/ClientManager.hpp"
+#include "../headers/CommandManager.hpp"
+#include "../headers/ChannelManager.hpp"
 
 
 Server::~Server() {
@@ -18,11 +22,12 @@ Server::~Server() {
         close(_socketPoolFds[i].fd);
 }
 
-Server::Server(std::string name, int serverPort, std::string serverPassword) : _name(name), _port(serverPort), _password(serverPassword), _socketFd(-1) {
+Server::Server(std::string name, int serverPort, std::string serverPassword) 
+: _name(name), _port(serverPort), _password(serverPassword), _socketFd(-1), _channelManager(*this) {
 	initializeCommands();
 }
 
-Server::Server(const Server &other) { 
+Server::Server(const Server &other) : _channelManager(*this) { 
 	*this = other; 
 	initializeCommands();
 }
@@ -40,6 +45,12 @@ Server &Server::operator=(const Server &other) {
 
 const std::string &Server::getPassword() const { return _password; }
 const std::string &Server::getName() const { return _name; }
+const ChannelManager &Server::getChannelManager() const { return _channelManager; }
+const ClientManager &Server::getClientManager() const { return _clientManager; }
+const CommandManager &Server::getCommandManager() const { return _commandManager; }
+ChannelManager &Server::getChannelManager() { return _channelManager; }
+ClientManager &Server::getClientManager() { return _clientManager; }
+CommandManager &Server::getCommandManager() { return _commandManager; }
 
 void Server::Initialize() {
 	_socketFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -102,7 +113,9 @@ void Server::handleNewConnection()
 	client_pfd.events = POLLIN;
 	_socketPoolFds.push_back(client_pfd);
 
-	onClientConnect(newSocket);
+	_clientManager.addClient(*this, newSocket);
+	Client *client = _clientManager.getClient(newSocket);
+	client->setHostname(inet_ntoa(clientAddr.sin_addr));
 }
 
 void Server::handleNewData(int socketFd)
@@ -142,15 +155,14 @@ void Server::handleNewData(int socketFd)
 		onClientDisconnect(socketFd);
 }
 
-void Server::onClientConnect(int socketFd)
-{
-	_clientManager.addClient(*this, socketFd);
-	Client *client = _clientManager.getClient(socketFd);
-	client->setHostname("*");
-}
 
 void Server::onClientDisconnect(int socketFd)
 {
+	Client *client = _clientManager.getClient(socketFd);
+	if (client) {
+		_channelManager.removeClientFromAllChannels(*client);
+	}
+	
 	for (std::vector<struct pollfd>::iterator it = _socketPoolFds.begin(); it != _socketPoolFds.end(); ++it)
         if (it->fd == socketFd) {
             _socketPoolFds.erase(it);
@@ -176,7 +188,7 @@ void Server::reply(Client &client, int code, std::string msg) {
     ss << code;
     std::string codeStr = ss.str();
     
-    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getUsername() + " " + msg;
+    std::string fullMsg = ":" + _name + " " + codeStr + " " + client.getNickname() + " " + msg;
     client.sendMessage(fullMsg);
 }
 
@@ -187,7 +199,8 @@ void Server::initializeCommands()
 	_commandManager.registerCommand(Command("PASS", "PASS COMMAND", Command_Pass));
 	_commandManager.registerCommand(Command("NICK", "NICK COMMAND", Command_Nick));
 	_commandManager.registerCommand(Command("USER", "USER COMMAND", Command_User));
-
+	_commandManager.registerCommand(Command("JOIN", "JOIN COMMAND", Command_Join));
+	_commandManager.registerCommand(Command("PRIVMSG", "PRIVMSG COMMAND", Command_Privmsg));
 }
 
 void Server::disconnectClient(Client &client)

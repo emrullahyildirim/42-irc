@@ -2,6 +2,7 @@
 #define CLIENT_MANAGER_HPP
 
 #include <map>
+#include <string>
 
 class Client;
 class Server;
@@ -21,6 +22,7 @@ class ClientManager
 		bool isExists(int socketFd) const;
 		
 		Client	*getClient(int socketFd);
+		Client  *getClientByNick(std::string &name) const;
 		const Client *getClient(int socketFd) const;
 		std::map<int, class Client> &getClients();
 		const std::map<int, class Client> &getClients() const;
